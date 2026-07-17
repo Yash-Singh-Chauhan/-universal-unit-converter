@@ -7,16 +7,17 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
 
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 1.875rem;
-  --text-4xl: 2.25rem;
-  --text-5xl: 3rem;
-  --text-6xl: 3.75rem;
+  /* ---- Responsive Typography (clamp-based) ---- */
+  --text-xs: clamp(0.7rem, 0.68rem + 0.1vw, 0.75rem);
+  --text-sm: clamp(0.8rem, 0.78rem + 0.12vw, 0.875rem);
+  --text-base: clamp(0.9rem, 0.88rem + 0.15vw, 1rem);
+  --text-lg: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --text-xl: clamp(1.1rem, 1rem + 0.4vw, 1.25rem);
+  --text-2xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem);
+  --text-3xl: clamp(1.5rem, 1.3rem + 1vw, 1.875rem);
+  --text-4xl: clamp(1.75rem, 1.4rem + 1.5vw, 2.25rem);
+  --text-5xl: clamp(2rem, 1.5rem + 2.5vw, 3rem);
+  --text-6xl: clamp(2.25rem, 1.5rem + 3.75vw, 3.75rem);
 
   --font-normal: 400;
   --font-medium: 500;
@@ -70,19 +71,30 @@
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 
-  /* ---- Spacing System ---- */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.25rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-  --space-10: 2.5rem;
-  --space-12: 3rem;
-  --space-16: 4rem;
-  --space-20: 5rem;
-  --space-24: 6rem;
+  /* ---- Responsive Spacing System ---- */
+  --space-1: clamp(0.2rem, 0.18rem + 0.1vw, 0.25rem);
+  --space-2: clamp(0.4rem, 0.35rem + 0.25vw, 0.5rem);
+  --space-3: clamp(0.6rem, 0.55rem + 0.25vw, 0.75rem);
+  --space-4: clamp(0.75rem, 0.65rem + 0.5vw, 1rem);
+  --space-5: clamp(1rem, 0.9rem + 0.5vw, 1.25rem);
+  --space-6: clamp(1.15rem, 1rem + 0.75vw, 1.5rem);
+  --space-8: clamp(1.5rem, 1.25rem + 1.25vw, 2rem);
+  --space-10: clamp(1.85rem, 1.5rem + 1.75vw, 2.5rem);
+  --space-12: clamp(2.25rem, 1.75rem + 2.5vw, 3rem);
+  --space-16: clamp(3rem, 2.5rem + 2.5vw, 4rem);
+  --space-20: clamp(3.75rem, 3rem + 3.75vw, 5rem);
+  --space-24: clamp(4.5rem, 3.5rem + 5vw, 6rem);
+
+  /* ---- Responsive Container Widths ---- */
+  --container-sm: 100%;
+  --container-md: min(100% - 2rem, 720px);
+  --container-lg: min(100% - 2rem, 960px);
+  --container-xl: min(100% - 2rem, 1200px);
+  --container-2xl: min(100% - 2rem, 1440px);
+
+  /* ---- Responsive Touch Targets ---- */
+  --touch-min-height: 44px;
+  --touch-min-width: 44px;
 }
 
 /* ==============================

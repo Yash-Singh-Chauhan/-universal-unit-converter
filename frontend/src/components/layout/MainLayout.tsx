@@ -4,10 +4,10 @@ import { Footer } from "./Footer";
 
 export function MainLayout() {
   return (
-    <div className="flex min-h-screen flex-col bg-[var(--color-background)]">
+    <div className="flex min-h-dvh flex-col bg-[var(--color-background)]">
       <Header />
       <main className="flex-1">
-        <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-5xl px-3 sm:px-6 lg:px-8 py-6 sm:py-8">
           <Outlet />
         </div>
       </main>

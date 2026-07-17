@@ -22,9 +22,9 @@ const variantStyles: Record<CardVariant, string> = {
 
 const paddingStyles: Record<string, string> = {
   none: "p-0",
-  sm: "p-3",
-  md: "p-5",
-  lg: "p-7",
+  sm: "p-3 sm:p-3",
+  md: "p-4 sm:p-5",
+  lg: "p-5 sm:p-7",
 };
 
 export function Card({

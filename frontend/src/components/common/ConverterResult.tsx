@@ -29,11 +29,11 @@ export function ConverterResult({
           <Badge variant="primary" size="sm">Result</Badge>
         </div>
 
-        <div className="flex items-baseline gap-2">
-          <span className="text-3xl font-bold text-[var(--color-text)] font-mono tracking-tight">
+        <div className="flex flex-wrap items-baseline gap-2">
+          <span className="text-2xl sm:text-3xl font-bold text-[var(--color-text)] font-mono tracking-tight break-words">
             {value}
           </span>
-          <span className="text-lg font-medium text-[var(--color-text-secondary)]">
+          <span className="text-base sm:text-lg font-medium text-[var(--color-text-secondary)]">
             {toUnit}
           </span>
         </div>

@@ -33,8 +33,8 @@ export function ConverterInput({
   className,
 }: ConverterInputProps) {
   return (
-    <Card variant="default" padding="lg" className={cn("space-y-6", className)}>
-      <div className="grid gap-6 sm:grid-cols-[1fr_auto_1fr] items-end">
+    <Card variant="default" padding="lg" className={cn("space-y-4 sm:space-y-6", className)}>
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-[1fr_auto_1fr] items-end">
         {/* Input Side */}
         <div className="space-y-3">
           <Input
@@ -58,14 +58,14 @@ export function ConverterInput({
         </div>
 
         {/* Swap Button */}
-        <div className="flex justify-center pb-1">
+        <div className="flex justify-center sm:pb-1">
           <Button
             variant="secondary"
             size="md"
             onClick={onSwap}
             icon={<ArrowDownUp size={16} />}
             aria-label="Swap units"
-            className="rounded-full h-10 w-10 p-0"
+            className="rounded-full h-11 w-11 sm:h-10 sm:w-10 p-0"
             disabled={isLoading}
           />
         </div>
@@ -79,7 +79,7 @@ export function ConverterInput({
             placeholder="Result..."
             value={outputValue}
             readOnly
-            className="font-mono font-semibold text-base bg-[var(--color-primary-500)]/5 border-[var(--color-primary-500)]/20"
+            className="font-mono font-semibold text-sm sm:text-base bg-[var(--color-primary-500)]/5 border-[var(--color-primary-500)]/20"
           />
           <Select
             id="to-unit"

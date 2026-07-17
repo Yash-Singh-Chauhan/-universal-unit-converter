@@ -22,8 +22,8 @@ export function Footer({ className }: FooterProps) {
 
   return (
     <footer className={cn("border-t border-[var(--color-border)] bg-[var(--color-background)] mt-auto", className)}>
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-8 sm:grid-cols-3">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:py-10 md:py-12 sm:px-6 lg:px-8">
+        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
           {/* Brand */}
           <div className="space-y-3">
             <Link to={ROUTES.HOME} className="flex items-center gap-2 text-[var(--color-text)] hover:text-[var(--color-primary-500)] transition-colors">

@@ -48,7 +48,7 @@ export function Modal({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -58,22 +58,24 @@ export function Modal({
             onClick={onClose}
           />
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
             className={cn(
-              "relative w-full rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-2xl)] p-6",
+              "relative w-full sm:w-auto rounded-t-2xl sm:rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-2xl)] p-5 sm:p-6",
+              "max-h-[90vh] sm:max-h-[85vh] overflow-y-auto",
               sizeStyles[size],
               className
             )}
           >
             {title && (
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-[var(--color-text)]">{title}</h2>
+                <h2 className="text-base sm:text-lg font-semibold text-[var(--color-text)]">{title}</h2>
                 <button
                   onClick={onClose}
-                  className="rounded-lg p-1.5 text-[var(--color-text-tertiary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] transition-colors"
+                  className="rounded-lg p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-[var(--color-text-tertiary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] transition-colors"
+                  aria-label="Close modal"
                 >
                   <X size={18} />
                 </button>

@@ -21,14 +21,14 @@ export function PlanetGravityConverter() {
   }, [state.value, state.fromUnit, state.toUnit, convert]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--color-primary-500)]/10 text-[var(--color-primary-500)]">
-          <Globe size={20} />
+    <div className="space-y-4 sm:space-y-5 md:space-y-6">
+      <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-[var(--color-primary-500)]/10 text-[var(--color-primary-500)] flex-shrink-0">
+          <Globe size={18} className="sm:size-[20px]" />
         </div>
-        <div>
-          <h1 className="text-2xl font-bold text-[var(--color-text)]">Planet Weight Converter</h1>
-          <p className="text-sm text-[var(--color-text-secondary)]">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold text-[var(--color-text)] truncate">Planet Weight Converter</h1>
+          <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] truncate">
             Calculate your weight on other planets and celestial bodies
           </p>
         </div>

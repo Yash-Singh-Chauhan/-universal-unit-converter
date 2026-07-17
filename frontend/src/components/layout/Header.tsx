@@ -46,22 +46,22 @@ export function Header() {
   }, [converters, navigate]);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[var(--color-border)] bg-[var(--color-background)]/80 backdrop-blur-xl supports-backdrop-blur:bg-[var(--color-background)]/80">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 w-full border-b border-[var(--color-border)] bg-[var(--color-background)]/80 backdrop-blur-xl supports-backdrop-blur:bg-[var(--color-background)]/80 safe-area-padding">
+      <div className="mx-auto flex h-14 sm:h-16 max-w-7xl items-center justify-between px-3 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link
           to={ROUTES.HOME}
-          className="flex items-center gap-2.5 text-[var(--color-text)] hover:text-[var(--color-primary-500)] transition-colors flex-shrink-0"
+          className="flex items-center gap-2 text-[var(--color-text)] hover:text-[var(--color-primary-500)] transition-colors flex-shrink-0"
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--color-primary-500)] to-[var(--color-secondary-500)] text-white">
-            <Ruler size={16} />
+          <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--color-primary-500)] to-[var(--color-secondary-500)] text-white">
+            <Ruler size={14} className="sm:size-[16px]" />
           </div>
-          <span className="text-lg font-bold tracking-tight hidden sm:inline">{APP_NAME}</span>
-          <span className="text-lg font-bold tracking-tight sm:hidden">UC</span>
+          <span className="text-base sm:text-lg font-bold tracking-tight hidden sm:inline">{APP_NAME}</span>
+          <span className="text-base sm:text-lg font-bold tracking-tight sm:hidden">UC</span>
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-1">
+        <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1">
           {navLinks.map((link) => (
             <NavLink
               key={link.path}
@@ -69,7 +69,7 @@ export function Header() {
               end={link.path === ROUTES.HOME}
               className={({ isActive }) =>
                 cn(
-                  "px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150",
+                  "px-2.5 xl:px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150",
                   isActive
                     ? "bg-[var(--color-primary-500)]/10 text-[var(--color-primary-500)]"
                     : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)]"
@@ -82,7 +82,7 @@ export function Header() {
         </nav>
 
         {/* Right side */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1 sm:gap-1.5">
           {/* Search */}
           <Button
             variant="ghost"
@@ -90,7 +90,7 @@ export function Header() {
             onClick={() => setSearchOpen(!searchOpen)}
             icon={<Search size={16} />}
             aria-label="Search converters"
-            className="hidden sm:inline-flex"
+            className="hidden sm:inline-flex touch-target"
           />
 
           {/* GitHub icon */}
@@ -98,7 +98,7 @@ export function Header() {
             href="https://github.com/Yash-Singh-Chauhan/-universal-unit-converter"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center rounded-lg p-2 text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] transition-colors"
+            className="inline-flex items-center justify-center rounded-lg p-2 min-h-[44px] min-w-[44px] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] transition-colors"
             aria-label="GitHub repository"
           >
             <Github size={18} />
@@ -111,12 +111,13 @@ export function Header() {
             onClick={() => setMode(theme.mode === "dark" ? "light" : "dark")}
             aria-label={`Switch to ${theme.mode === "dark" ? "light" : "dark"} mode`}
             icon={theme.mode === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+            className="touch-target"
           />
 
           {/* Mobile hamburger */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="inline-flex items-center justify-center rounded-lg p-2 text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] transition-colors lg:hidden"
+            className="inline-flex items-center justify-center rounded-lg p-2 min-h-[44px] min-w-[44px] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] transition-colors lg:hidden"
             aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
           >
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
@@ -124,7 +125,7 @@ export function Header() {
         </div>
       </div>
 
-      {/* Search Bar */}
+      {/* Search Bar - full width on mobile */}
       <AnimatePresence>
         {searchOpen && (
           <motion.div
@@ -132,16 +133,16 @@ export function Header() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.15 }}
-            className="border-t border-[var(--color-border)] px-4 py-3"
+            className="border-t border-[var(--color-border)] px-3 sm:px-4 py-3"
           >
-            <form onSubmit={handleSearch} className="mx-auto max-w-md">
+            <form onSubmit={handleSearch} className="mx-auto w-full max-w-md">
               <div className="relative">
                 <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-tertiary)]" />
                 <input
                   name="search"
                   type="text"
-                  placeholder="Search converters (e.g., height, weight)..."
-                  className="w-full pl-9 pr-4 py-2 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-primary-500)] focus:ring-1 focus:ring-[var(--color-primary-500)]/20 transition-all"
+                  placeholder="Search converters..."
+                  className="w-full pl-9 pr-4 py-2.5 sm:py-2 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-primary-500)] focus:ring-1 focus:ring-[var(--color-primary-500)]/20 transition-all"
                   autoFocus
                 />
               </div>
@@ -150,7 +151,7 @@ export function Header() {
         )}
       </AnimatePresence>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer - full width on small screens */}
       <AnimatePresence>
         {mobileOpen && (
           <>
@@ -166,18 +167,19 @@ export function Header() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed inset-y-0 right-0 z-50 w-72 bg-[var(--color-surface)] border-l border-[var(--color-border)] shadow-2xl lg:hidden"
+              className="fixed inset-y-0 right-0 z-50 w-full max-w-xs sm:max-w-sm bg-[var(--color-surface)] border-l border-[var(--color-border)] shadow-2xl lg:hidden"
             >
-              <div className="flex items-center justify-between px-4 py-4 border-b border-[var(--color-border)]">
+              <div className="flex items-center justify-between px-4 sm:px-5 py-4 border-b border-[var(--color-border)]">
                 <span className="text-sm font-semibold text-[var(--color-text)]">Navigation</span>
                 <button
                   onClick={closeMobile}
-                  className="rounded-lg p-1.5 text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] transition-colors"
+                  className="rounded-lg p-2 min-h-[44px] min-w-[44px] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] transition-colors flex items-center justify-center"
+                  aria-label="Close menu"
                 >
-                  <X size={18} />
+                  <X size={20} />
                 </button>
               </div>
-              <div className="px-3 py-4 space-y-1">
+              <div className="px-3 sm:px-4 py-4 space-y-1">
                 {navLinks.map((link) => (
                   <NavLink
                     key={link.path}
@@ -186,14 +188,14 @@ export function Header() {
                     onClick={closeMobile}
                     className={({ isActive }) =>
                       cn(
-                        "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
+                        "flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all touch-target",
                         isActive
                           ? "bg-[var(--color-primary-500)]/10 text-[var(--color-primary-500)]"
                           : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)]"
                       )
                     }
                   >
-                    <link.icon size={18} />
+                    <link.icon size={20} />
                     {link.label}
                   </NavLink>
                 ))}
