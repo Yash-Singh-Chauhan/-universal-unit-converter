@@ -12,6 +12,7 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    // Proxy API requests to backend in development (only active during vite dev)
     proxy: {
       "/api": {
         target: "http://localhost:3001",
