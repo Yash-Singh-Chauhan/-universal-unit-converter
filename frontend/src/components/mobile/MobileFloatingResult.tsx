@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Copy, Check, Share2, Heart, HeartOff } from "lucide-react";
-import { motion } from "framer-motion";
+import { Copy, Check, Share2, Heart } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/utils";
 
 interface MobileFloatingResultProps {
@@ -42,72 +42,81 @@ export function MobileFloatingResult({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      initial={{ opacity: 0, y: 24, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.3, ease: "easeOut", type: "spring", stiffness: 200, damping: 25 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
-        "relative overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--color-primary-500)]/10 to-[var(--color-secondary-500)]/10 border border-[var(--color-primary-500)]/20 shadow-lg shadow-[var(--color-primary-500)]/5",
+        "relative overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--color-primary-500)]/8 to-[var(--color-secondary-500)]/5 border border-[var(--color-primary-500)]/15 shadow-lg",
         className
       )}
     >
-      {/* Glass shimmer effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+      {/* Glass shimmer */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
 
       <div className="relative p-5 space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-[var(--color-primary-500)] uppercase tracking-wider">
+          <span className="text-[10px] font-semibold text-[var(--color-primary-500)] uppercase tracking-[0.15em]">
             Result
           </span>
           <motion.button
             whileTap={{ scale: 0.85 }}
             onClick={() => setFavorited(!favorited)}
             className={cn(
-              "rounded-full p-2 transition-colors",
+              "rounded-full p-1.5 transition-colors",
               favorited
                 ? "text-[var(--color-error)]"
-                : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text)]"
+                : "text-[var(--color-text-tertiary)]"
             )}
             aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
           >
-            {favorited ? <Heart size={16} fill="currentColor" /> : <HeartOff size={16} />}
+            <Heart size={16} fill={favorited ? "currentColor" : "none"} />
           </motion.button>
         </div>
 
-        {/* Value */}
-        <div>
-          <span className="text-3xl font-extrabold text-[var(--color-text)] font-mono tracking-tight break-words">
-            {value}
-          </span>
-          <span className="ml-2 text-lg font-semibold text-[var(--color-text-secondary)]">
+        {/* Animated Value */}
+        <div className="flex items-baseline gap-2 min-h-[48px]">
+          <AnimatePresence mode="popLayout">
+            <motion.span
+              key={value}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              className="text-3xl font-extrabold text-[var(--color-text)] font-mono tracking-tight break-words"
+            >
+              {value}
+            </motion.span>
+          </AnimatePresence>
+          <span className="text-lg font-semibold text-[var(--color-text-secondary)] whitespace-nowrap">
             {unit}
           </span>
         </div>
 
         {/* Formula */}
         {formula && (
-          <p className="text-xs text-[var(--color-text-tertiary)] font-mono bg-[var(--color-background)]/50 rounded-lg px-3 py-2">
+          <p className="text-[11px] text-[var(--color-text-tertiary)] font-mono bg-[var(--color-background)]/40 rounded-xl px-3 py-2 border border-[var(--color-border)]/50">
             {formula}
           </p>
         )}
 
         {/* Meta */}
-        <div className="flex items-center gap-2 text-xs text-[var(--color-text-tertiary)]">
+        <div className="flex items-center gap-2 text-[11px] text-[var(--color-text-tertiary)]">
           <span>From: {fromUnit}</span>
-          <span aria-hidden="true">&middot;</span>
+          <span aria-hidden="true" className="opacity-40">&middot;</span>
           <span>To: {unit}</span>
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-2 pt-1">
+        <div className="flex items-center gap-2">
           <motion.button
-            whileTap={{ scale: 0.9 }}
+            whileTap={{ scale: 0.92 }}
             onClick={handleCopy}
             className={cn(
-              "flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all min-h-[44px]",
+              "flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all min-h-[44px]",
               copied
-                ? "bg-[var(--color-success)]/10 text-[var(--color-success)]"
-                : "bg-[var(--color-surface)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)] border border-[var(--color-border)]"
+                ? "bg-[var(--color-success)]/10 text-[var(--color-success)] border border-[var(--color-success)]/20"
+                : "bg-[var(--color-surface)] text-[var(--color-text-secondary)] border border-[var(--color-border)] shadow-sm"
             )}
           >
             {copied ? <Check size={14} /> : <Copy size={14} />}
@@ -115,9 +124,9 @@ export function MobileFloatingResult({
           </motion.button>
 
           <motion.button
-            whileTap={{ scale: 0.9 }}
+            whileTap={{ scale: 0.92 }}
             onClick={handleShare}
-            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-medium bg-[var(--color-surface)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)] border border-[var(--color-border)] transition-all min-h-[44px]"
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold bg-[var(--color-surface)] text-[var(--color-text-secondary)] border border-[var(--color-border)] shadow-sm min-h-[44px]"
           >
             <Share2 size={14} />
             Share

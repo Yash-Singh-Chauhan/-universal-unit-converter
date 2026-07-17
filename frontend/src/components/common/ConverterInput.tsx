@@ -39,15 +39,110 @@ export function ConverterInput({
   const [inputSheetOpen, setInputSheetOpen] = useState(false);
   const [outputSheetOpen, setOutputSheetOpen] = useState(false);
 
-  // Find selected labels
   const inputUnitLabel = unitOptions.find((o) => o.value === inputUnit)?.label ?? inputUnit;
   const outputUnitLabel = unitOptions.find((o) => o.value === outputUnit)?.label ?? outputUnit;
 
+  // Mobile: Apple Calculator-style layout
+  if (isMobile) {
+    return (
+      <>
+        <div className={cn("space-y-3", className)}>
+          {/* FROM Section */}
+          <div className="rounded-2xl bg-[var(--color-surface)] border border-[var(--color-border)] overflow-hidden shadow-sm">
+            <div className="px-4 pt-3 pb-2">
+              <label className="text-[10px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider">
+                From
+              </label>
+              <div className="flex items-center gap-3 mt-1">
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  placeholder="0"
+                  value={inputValue}
+                  onChange={(e) => onInputChange(e.target.value)}
+                  disabled={isLoading}
+                  className="flex-1 bg-transparent text-xl font-semibold text-[var(--color-text)] placeholder:text-[var(--color-text-tertiary)]/50 focus:outline-none py-2 min-h-[44px]"
+                  autoComplete="off"
+                />
+                <button
+                  type="button"
+                  onClick={() => setInputSheetOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[var(--color-background-secondary)] text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors flex-shrink-0"
+                >
+                  <span className="truncate max-w-[100px]">{inputUnitLabel}</span>
+                  <ChevronDown size={14} className="flex-shrink-0 opacity-60" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Swap + Output */}
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={onSwap}
+              disabled={isLoading}
+              className="flex-shrink-0 rounded-full p-2.5 bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:border-[var(--color-border-hover)] transition-all active:scale-90"
+              aria-label="Swap units"
+            >
+              <ArrowDownUp size={16} />
+            </button>
+
+            <div className="flex-1 rounded-2xl bg-[var(--color-surface)] border border-[var(--color-border)] overflow-hidden shadow-sm">
+              <div className="px-4 pt-3 pb-2">
+                <label className="text-[10px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider">
+                  To
+                </label>
+                <div className="flex items-center gap-3 mt-1">
+                  <input
+                    type="text"
+                    placeholder="0"
+                    value={outputValue}
+                    readOnly
+                    className="flex-1 bg-transparent text-xl font-semibold text-[var(--color-text)] focus:outline-none py-2 font-mono"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setOutputSheetOpen(true)}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[var(--color-background-secondary)] text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors flex-shrink-0"
+                  >
+                    <span className="truncate max-w-[100px]">{outputUnitLabel}</span>
+                    <ChevronDown size={14} className="flex-shrink-0 opacity-60" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Bottom Sheets */}
+        <BottomSheet
+          isOpen={inputSheetOpen}
+          onClose={() => setInputSheetOpen(false)}
+          title="Select unit"
+          options={unitOptions.map((o) => ({ value: o.value, label: o.label }))}
+          selectedValue={inputUnit}
+          onSelect={(val) => onInputUnitChange(val)}
+          searchable
+        />
+        <BottomSheet
+          isOpen={outputSheetOpen}
+          onClose={() => setOutputSheetOpen(false)}
+          title="Select unit"
+          options={unitOptions.map((o) => ({ value: o.value, label: o.label }))}
+          selectedValue={outputUnit}
+          onSelect={(val) => onOutputUnitChange(val)}
+          searchable
+        />
+      </>
+    );
+  }
+
+  // Desktop: Existing side-by-side layout
   return (
     <>
       <Card variant="default" padding="lg" className={cn("space-y-4 sm:space-y-6", className)}>
         <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-[1fr_auto_1fr] items-end">
-          {/* Input Side */}
           <div className="space-y-3">
             <Input
               id="input-value"
@@ -59,7 +154,6 @@ export function ConverterInput({
               onChange={(e) => onInputChange(e.target.value)}
               disabled={isLoading}
             />
-            {/* Desktop: Select dropdown */}
             <div className="hidden sm:block">
               <Select
                 id="from-unit"
@@ -70,23 +164,8 @@ export function ConverterInput({
                 disabled={isLoading}
               />
             </div>
-            {/* Mobile: Bottom sheet trigger */}
-            {isMobile && (
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium text-[var(--color-text-secondary)]">Unit</label>
-                <button
-                  type="button"
-                  onClick={() => setInputSheetOpen(true)}
-                  className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm sm:text-base bg-[var(--color-surface)] text-[var(--color-text)] border border-[var(--color-border)] hover:border-[var(--color-border-hover)] transition-all"
-                >
-                  <span className="truncate">{inputUnitLabel}</span>
-                  <ChevronDown size={16} className="flex-shrink-0 text-[var(--color-text-tertiary)] ml-2" />
-                </button>
-              </div>
-            )}
           </div>
 
-          {/* Swap Button */}
           <div className="flex justify-center sm:pb-1">
             <Button
               variant="secondary"
@@ -99,7 +178,6 @@ export function ConverterInput({
             />
           </div>
 
-          {/* Output Side */}
           <div className="space-y-3">
             <Input
               id="output-value"
@@ -110,7 +188,6 @@ export function ConverterInput({
               readOnly
               className="font-mono font-semibold text-sm sm:text-base bg-[var(--color-primary-500)]/5 border-[var(--color-primary-500)]/20"
             />
-            {/* Desktop: Select dropdown */}
             <div className="hidden sm:block">
               <Select
                 id="to-unit"
@@ -121,47 +198,9 @@ export function ConverterInput({
                 disabled={isLoading}
               />
             </div>
-            {/* Mobile: Bottom sheet trigger */}
-            {isMobile && (
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium text-[var(--color-text-secondary)]">Unit</label>
-                <button
-                  type="button"
-                  onClick={() => setOutputSheetOpen(true)}
-                  className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm sm:text-base bg-[var(--color-surface)] text-[var(--color-text)] border border-[var(--color-border)] hover:border-[var(--color-border-hover)] transition-all"
-                >
-                  <span className="truncate">{outputUnitLabel}</span>
-                  <ChevronDown size={16} className="flex-shrink-0 text-[var(--color-text-tertiary)] ml-2" />
-                </button>
-              </div>
-            )}
           </div>
         </div>
       </Card>
-
-      {/* Mobile Bottom Sheets */}
-      {isMobile && (
-        <>
-          <BottomSheet
-            isOpen={inputSheetOpen}
-            onClose={() => setInputSheetOpen(false)}
-            title="Select unit"
-            options={unitOptions.map((o) => ({ value: o.value, label: o.label }))}
-            selectedValue={inputUnit}
-            onSelect={(val) => onInputUnitChange(val)}
-            searchable
-          />
-          <BottomSheet
-            isOpen={outputSheetOpen}
-            onClose={() => setOutputSheetOpen(false)}
-            title="Select unit"
-            options={unitOptions.map((o) => ({ value: o.value, label: o.label }))}
-            selectedValue={outputUnit}
-            onSelect={(val) => onOutputUnitChange(val)}
-            searchable
-          />
-        </>
-      )}
     </>
   );
 }

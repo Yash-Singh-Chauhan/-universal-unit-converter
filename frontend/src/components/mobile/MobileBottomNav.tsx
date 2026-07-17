@@ -41,41 +41,43 @@ export function MobileBottomNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden safe-area-padding">
-      {/* Background with blur */}
-      <div className="absolute inset-0 bg-[var(--color-background)]/90 backdrop-blur-xl border-t border-[var(--color-border)]" />
+      {/* Background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-background)] via-[var(--color-background)]/95 to-transparent" />
 
-      {/* Tab bar */}
-      <div className="relative flex items-center justify-around px-2 py-2">
-        {tabs.map((tab) => {
-          const isActive = activeTab === tab.id;
-          const Icon = tab.icon;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => handleTabPress(tab)}
-              className={cn(
-                "relative flex flex-col items-center justify-center gap-0.5 py-1.5 px-4 rounded-xl transition-all duration-150 min-h-[48px] min-w-[56px]",
-                isActive
-                  ? "text-[var(--color-primary-500)]"
-                  : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]"
-              )}
-            >
-              {isActive && (
-                <motion.div
-                  layoutId="mobile-nav-indicator"
-                  className="absolute inset-0 rounded-xl bg-[var(--color-primary-500)]/10"
-                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                />
-              )}
-              <div className="relative z-10 flex flex-col items-center gap-0.5">
-                <Icon size={22} />
-                <span className="text-[10px] font-medium leading-none">
-                  {tab.label}
-                </span>
-              </div>
-            </button>
-          );
-        })}
+      {/* Glass container */}
+      <div className="relative mx-3 mb-3 rounded-2xl bg-[var(--color-surface)]/80 backdrop-blur-2xl border border-[var(--color-border)] shadow-xl shadow-black/5">
+        <div className="flex items-center justify-around px-1 py-1.5">
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.id;
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => handleTabPress(tab)}
+                className={cn(
+                  "relative flex flex-col items-center justify-center gap-0.5 py-2 px-4 rounded-xl transition-all duration-200 min-h-[44px] min-w-[52px]",
+                  isActive
+                    ? "text-[var(--color-primary-500)]"
+                    : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]"
+                )}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="mobile-nav-indicator"
+                    className="absolute inset-0 rounded-xl bg-[var(--color-primary-500)]/10"
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
+                <div className="relative z-10 flex flex-col items-center gap-0.5">
+                  <Icon size={20} />
+                  <span className="text-[9px] font-semibold leading-none tracking-wide">
+                    {tab.label}
+                  </span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </nav>
   );

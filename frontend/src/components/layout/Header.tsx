@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
-  Moon, Sun, Ruler, Search,
+  Moon, Sun, Ruler, Search, Bell,
   Github, Home,
   Weight, FlaskConical, Coins, Globe, User,
 } from "lucide-react";
@@ -127,26 +127,32 @@ export function Header() {
           </Link>
 
           {/* Right icons */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5">
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="rounded-full p-2 min-h-[40px] min-w-[40px] flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] transition-colors"
+              className="rounded-full p-2 min-h-[40px] min-w-[40px] flex items-center justify-center text-[var(--color-text-tertiary)] hover:bg-[var(--color-surface-hover)] transition-colors"
               aria-label="Search"
             >
               <Search size={18} />
             </button>
 
+            {/* Notification icon (UI only) */}
+            <div className="relative p-2 min-h-[40px] min-w-[40px] flex items-center justify-center text-[var(--color-text-tertiary)]">
+              <Bell size={18} />
+              <span className="absolute top-1.5 right-2 w-2 h-2 rounded-full bg-[var(--color-error)]" />
+            </div>
+
             <button
               onClick={() => setMode(theme.mode === "dark" ? "light" : "dark")}
-              className="rounded-full p-2 min-h-[40px] min-w-[40px] flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] transition-colors"
+              className="rounded-full p-2 min-h-[40px] min-w-[40px] flex items-center justify-center text-[var(--color-text-tertiary)] hover:bg-[var(--color-surface-hover)] transition-colors"
               aria-label={`Switch to ${theme.mode === "dark" ? "light" : "dark"} mode`}
             >
               {theme.mode === "dark" ? <Sun size={18} /> : <Moon size={18} />}
             </button>
 
             {/* Profile avatar */}
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[var(--color-primary-500)] to-[var(--color-secondary-500)] flex items-center justify-center text-white">
-              <User size={14} />
+            <div className="ml-0.5 w-7 h-7 rounded-full bg-gradient-to-br from-[var(--color-primary-500)] to-[var(--color-secondary-500)] flex items-center justify-center text-white shadow-sm">
+              <User size={13} />
             </div>
           </div>
         </div>

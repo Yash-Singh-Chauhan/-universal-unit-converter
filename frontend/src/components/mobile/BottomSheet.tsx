@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Search, X } from "lucide-react";
+import { Search, X, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/utils";
 
@@ -18,6 +18,25 @@ interface BottomSheetProps {
   searchable?: boolean;
 }
 
+const STORAGE_KEY = "uc-recent-selections";
+
+function loadRecentSelections(): string[] {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as string[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveRecentSelections(values: string[]): void {
+  try {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(values.slice(0, 5)));
+  } catch {
+    // Silently fail
+  }
+}
+
 export function BottomSheet({
   isOpen,
   onClose,
@@ -28,16 +47,15 @@ export function BottomSheet({
   searchable = false,
 }: BottomSheetProps) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [recentSelections, setRecentSelections] = useState<string[]>(loadRecentSelections);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Focus search input when sheet opens
   useEffect(() => {
     if (isOpen && searchable) {
       setTimeout(() => inputRef.current?.focus(), 300);
     }
   }, [isOpen, searchable]);
 
-  // Reset search on close
   useEffect(() => {
     if (!isOpen) {
       setTimeout(() => setSearchQuery(""), 200);
@@ -50,7 +68,11 @@ export function BottomSheet({
       )
     : options;
 
-  // Prevent body scroll when sheet is open
+  const recentOptions = recentSelections
+    .map((val) => options.find((o) => o.value === val))
+    .filter((o): o is BottomSheetOption => o !== undefined)
+    .filter((o) => o.value !== selectedValue);
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -62,7 +84,6 @@ export function BottomSheet({
     };
   }, [isOpen]);
 
-  // Close on Escape key
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -71,11 +92,18 @@ export function BottomSheet({
     return () => window.removeEventListener("keydown", handleEsc);
   }, [isOpen, onClose]);
 
+  const handleSelect = (value: string) => {
+    onSelect(value);
+    const updated = [value, ...recentSelections.filter((v) => v !== value)];
+    setRecentSelections(updated);
+    saveRecentSelections(updated);
+    onClose();
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[70] flex items-end justify-center">
-          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -85,25 +113,19 @@ export function BottomSheet({
             onClick={onClose}
           />
 
-          {/* Sheet */}
           <motion.div
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 350 }}
             className="relative z-10 w-full max-h-[80vh] rounded-t-3xl bg-[var(--color-surface)] border-t border-[var(--color-border)] shadow-2xl flex flex-col"
-            style={{ maxHeight: "80vh" }}
           >
-            {/* Handle */}
             <div className="flex justify-center pt-3 pb-1">
-              <div className="w-10 h-1 rounded-full bg-[var(--color-text-tertiary)]/40" />
+              <div className="w-10 h-1 rounded-full bg-[var(--color-text-tertiary)]/30" />
             </div>
 
-            {/* Header */}
             <div className="flex items-center justify-between px-6 pb-3 pt-1">
-              <h2 className="text-base font-semibold text-[var(--color-text)]">
-                {title}
-              </h2>
+              <h2 className="text-base font-semibold text-[var(--color-text)]">{title}</h2>
               <button
                 onClick={onClose}
                 className="rounded-full p-2 min-h-[40px] min-w-[40px] flex items-center justify-center text-[var(--color-text-tertiary)] hover:bg-[var(--color-surface-hover)] transition-colors"
@@ -113,14 +135,10 @@ export function BottomSheet({
               </button>
             </div>
 
-            {/* Search */}
             {searchable && (
               <div className="px-4 pb-3">
                 <div className="relative">
-                  <Search
-                    size={16}
-                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--color-text-tertiary)]"
-                  />
+                  <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--color-text-tertiary)]" />
                   <input
                     ref={inputRef}
                     type="text"
@@ -133,13 +151,31 @@ export function BottomSheet({
               </div>
             )}
 
-            {/* Options list */}
             <div className="flex-1 overflow-y-auto px-4 pb-8 space-y-0.5">
+              {/* Recent selections */}
+              {!searchQuery && recentOptions.length > 0 && (
+                <div className="mb-2">
+                  <div className="flex items-center gap-1.5 px-4 py-2">
+                    <Clock size={12} className="text-[var(--color-text-tertiary)]" />
+                    <span className="text-[10px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider">Recent</span>
+                  </div>
+                  {recentOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      onClick={() => handleSelect(option.value)}
+                      className="w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] transition-all"
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                  <div className="border-t border-[var(--color-border)] my-2 mx-4" />
+                </div>
+              )}
+
+              {/* All options */}
               {filteredOptions.length === 0 ? (
                 <div className="py-8 text-center">
-                  <p className="text-sm text-[var(--color-text-tertiary)]">
-                    No results found
-                  </p>
+                  <p className="text-sm text-[var(--color-text-tertiary)]">No results found</p>
                 </div>
               ) : (
                 filteredOptions.map((option) => {
@@ -147,10 +183,7 @@ export function BottomSheet({
                   return (
                     <button
                       key={option.value}
-                      onClick={() => {
-                        onSelect(option.value);
-                        onClose();
-                      }}
+                      onClick={() => handleSelect(option.value)}
                       className={cn(
                         "w-full text-left px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-150",
                         isSelected
@@ -161,15 +194,13 @@ export function BottomSheet({
                       <span className="flex items-center gap-3">
                         <span
                           className={cn(
-                            "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all",
+                            "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0",
                             isSelected
                               ? "border-[var(--color-primary-500)] bg-[var(--color-primary-500)]"
                               : "border-[var(--color-border-hover)]"
                           )}
                         >
-                          {isSelected && (
-                            <span className="w-2 h-2 rounded-full bg-white" />
-                          )}
+                          {isSelected && <span className="w-2 h-2 rounded-full bg-white" />}
                         </span>
                         <span>{option.label}</span>
                       </span>
