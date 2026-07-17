@@ -4,13 +4,14 @@ import {
   Info, Star, Share2, Shield, FileText, ChevronRight, Sliders,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useTheme, useSettings } from "@/hooks";
+import { useTheme, useSettings, useMediaQuery } from "@/hooks";
 import { ROUTES, APP_NAME, APP_VERSION } from "@/constants";
 
 export function SettingsPage() {
   const navigate = useNavigate();
   const { theme, setMode, toggleGlassmorphism, toggleReducedMotion } = useTheme();
   const { settings, updateSettings } = useSettings();
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -26,20 +27,21 @@ export function SettingsPage() {
     <>
       <SEOHead title="Settings" />
 
-      {/* Mobile header */}
-      <div className="flex sm:hidden items-center gap-2 mb-5">
-        <button
-          onClick={() => navigate(ROUTES.HOME)}
-          className="rounded-full p-2 min-h-[48px] min-w-[48px] flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] transition-colors active:scale-[0.95]"
-          aria-label="Go back"
-        >
-          <ArrowLeft size={20} />
-        </button>
-        <h1 className="text-lg font-bold text-[var(--color-text)]">Settings</h1>
-      </div>
-
-      {/* Desktop title */}
-      <h1 className="hidden sm:block text-2xl font-bold text-[var(--color-text)] mb-6">Settings</h1>
+      {/* Header — separate for mobile and desktop */}
+      {isDesktop ? (
+        <h1 className="text-2xl font-bold text-[var(--color-text)] mb-6">Settings</h1>
+      ) : (
+        <div className="flex items-center gap-2 mb-5">
+          <button
+            onClick={() => navigate(ROUTES.HOME)}
+            className="rounded-full p-2 min-h-[48px] min-w-[48px] flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] transition-colors active:scale-[0.95]"
+            aria-label="Go back"
+          >
+            <ArrowLeft size={20} />
+          </button>
+          <h1 className="text-lg font-bold text-[var(--color-text)]">Settings</h1>
+        </div>
+      )}
 
       <div className="space-y-4 max-w-lg pb-8">
         {/* ===== APPEARANCE ===== */}
@@ -54,7 +56,7 @@ export function SettingsPage() {
           </div>
 
           <div className="divide-y divide-[var(--color-border)]">
-            {/* Dark Mode */}
+            {/* Theme */}
             <div className="px-4 py-3 text-sm space-y-2">
               <label className="text-[11px] font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider">Theme</label>
               <div className="flex gap-2">
@@ -219,9 +221,8 @@ export function SettingsPage() {
           </div>
 
           <div className="divide-y divide-[var(--color-border)]">
-            {/* Rate App */}
             <button
-              onClick={() => {/* In-app rating - native flow */}}
+              onClick={() => {}}
               className="w-full px-4 py-3.5 flex items-center justify-between text-sm text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] transition-colors min-h-[48px] active:scale-[0.99]"
             >
               <div className="flex items-center gap-3">
@@ -231,7 +232,6 @@ export function SettingsPage() {
               <ChevronRight size={16} className="text-[var(--color-text-tertiary)]" />
             </button>
 
-            {/* Share App */}
             <button
               onClick={handleShare}
               className="w-full px-4 py-3.5 flex items-center justify-between text-sm text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] transition-colors min-h-[48px] active:scale-[0.99]"
@@ -243,9 +243,8 @@ export function SettingsPage() {
               <ChevronRight size={16} className="text-[var(--color-text-tertiary)]" />
             </button>
 
-            {/* Privacy Policy */}
             <button
-              onClick={() => {/* Navigate to privacy */}}
+              onClick={() => {}}
               className="w-full px-4 py-3.5 flex items-center justify-between text-sm text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] transition-colors min-h-[48px] active:scale-[0.99]"
             >
               <div className="flex items-center gap-3">
@@ -255,9 +254,8 @@ export function SettingsPage() {
               <ChevronRight size={16} className="text-[var(--color-text-tertiary)]" />
             </button>
 
-            {/* Terms */}
             <button
-              onClick={() => {/* Navigate to terms */}}
+              onClick={() => {}}
               className="w-full px-4 py-3.5 flex items-center justify-between text-sm text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] transition-colors min-h-[48px] active:scale-[0.99]"
             >
               <div className="flex items-center gap-3">

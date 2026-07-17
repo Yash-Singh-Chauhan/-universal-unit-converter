@@ -2,13 +2,14 @@ import { Heart, ArrowLeft, Trash2, ChevronRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { SEOHead } from "@/components/common";
-import { useFavorites, useApp } from "@/hooks";
+import { useFavorites, useApp, useMediaQuery } from "@/hooks";
 import { ROUTES } from "@/constants";
 
 export function FavoritesPage() {
   const navigate = useNavigate();
   const { favorites, toggleFavorite } = useFavorites();
   const { converters } = useApp();
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   const favoriteConverters = converters.filter((c) =>
     favorites.includes(c.id)
@@ -18,35 +19,36 @@ export function FavoritesPage() {
     <>
       <SEOHead title="Favorites" />
 
-      {/* Mobile Header */}
-      <div className="flex sm:hidden items-center gap-2 mb-5">
-        <button
-          onClick={() => navigate(ROUTES.HOME)}
-          className="rounded-full p-2 min-h-[48px] min-w-[48px] flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] transition-colors active:scale-[0.95]"
-          aria-label="Go back"
-        >
-          <ArrowLeft size={20} />
-        </button>
-        <h1 className="text-lg font-bold text-[var(--color-text)]">Favorites</h1>
-        {favoriteConverters.length > 0 && (
-          <span className="text-xs text-[var(--color-text-tertiary)] ml-1">
-            ({favoriteConverters.length})
-          </span>
-        )}
-      </div>
-
-      {/* Desktop title */}
-      <h1 className="hidden sm:block text-2xl font-bold text-[var(--color-text)] mb-6">
-        Favorites
-        {favoriteConverters.length > 0 && (
-          <span className="text-base font-normal text-[var(--color-text-tertiary)] ml-2">
-            ({favoriteConverters.length})
-          </span>
-        )}
-      </h1>
+      {/* Title — separate for mobile and desktop */}
+      {isDesktop ? (
+        <h1 className="text-2xl font-bold text-[var(--color-text)] mb-6">
+          Favorites
+          {favoriteConverters.length > 0 && (
+            <span className="text-base font-normal text-[var(--color-text-tertiary)] ml-2">
+              ({favoriteConverters.length})
+            </span>
+          )}
+        </h1>
+      ) : (
+        <div className="flex items-center gap-2 mb-5">
+          <button
+            onClick={() => navigate(ROUTES.HOME)}
+            className="rounded-full p-2 min-h-[48px] min-w-[48px] flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] transition-colors active:scale-[0.95]"
+            aria-label="Go back"
+          >
+            <ArrowLeft size={20} />
+          </button>
+          <h1 className="text-lg font-bold text-[var(--color-text)]">Favorites</h1>
+          {favoriteConverters.length > 0 && (
+            <span className="text-xs text-[var(--color-text-tertiary)] ml-1">
+              ({favoriteConverters.length})
+            </span>
+          )}
+        </div>
+      )}
 
       {favoriteConverters.length === 0 ? (
-        /* ===== Empty state ===== */
+        /* Empty state */
         <div className="flex flex-col items-center justify-center py-16 sm:py-20 px-4">
           <motion.div
             initial={{ scale: 0 }}
@@ -70,7 +72,7 @@ export function FavoritesPage() {
           </button>
         </div>
       ) : (
-        /* ===== Favorites list ===== */
+        /* Favorites list */
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {favoriteConverters.map((converter, index) => {
             const Icon = converter.icon;

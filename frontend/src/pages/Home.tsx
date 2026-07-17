@@ -5,7 +5,8 @@ import { ConverterCard } from "@/components/common";
 import { SEOHead } from "@/components/common";
 import { Button, GlassPanel } from "@/components/ui";
 import { MobileSearchBar, MobileConverterCard } from "@/components/mobile";
-import { useApp } from "@/hooks";
+import { useApp, useMediaQuery } from "@/hooks";
+import type { ConverterDefinition } from "@/types";
 
 const floatingCircles = [
   { size: 300, x: "10%", y: "20%", color: "from-[var(--color-primary-500)]/20", delay: 0 },
@@ -14,18 +15,16 @@ const floatingCircles = [
   { size: 150, x: "30%", y: "70%", color: "from-[var(--color-primary-500)]/10", delay: 1 },
 ];
 
-export function HomePage() {
-  const { converters } = useApp();
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const categorizedConverters = useMemo(() => ({
-    common: converters.filter((c) => c.category === "common"),
-    financial: converters.filter((c) => c.category === "financial"),
-    specialized: converters.filter((c) => c.category === "specialized"),
-  }), [converters]);
+function DesktopContent({ converters }: { converters: ConverterDefinition[] }) {
+  const [searchQuery] = useState("");
 
   const filteredConverters = useMemo(() => {
-    if (!searchQuery) return categorizedConverters;
+    const categorized = {
+      common: converters.filter((c) => c.category === "common"),
+      financial: converters.filter((c) => c.category === "financial"),
+      specialized: converters.filter((c) => c.category === "specialized"),
+    };
+    if (!searchQuery) return categorized;
     const q = searchQuery.toLowerCase();
     const filter = (arr: typeof converters) =>
       arr.filter(
@@ -34,27 +33,16 @@ export function HomePage() {
           c.description.toLowerCase().includes(q)
       );
     return {
-      common: filter(categorizedConverters.common),
-      financial: filter(categorizedConverters.financial),
-      specialized: filter(categorizedConverters.specialized),
+      common: filter(categorized.common),
+      financial: filter(categorized.financial),
+      specialized: filter(categorized.specialized),
     };
-  }, [categorizedConverters, searchQuery]);
-
-  const allFiltered = useMemo(
-    () => [
-      ...filteredConverters.common,
-      ...filteredConverters.financial,
-      ...filteredConverters.specialized,
-    ],
-    [filteredConverters]
-  );
+  }, [converters, searchQuery]);
 
   return (
     <>
-      <SEOHead />
-
-      {/* ===== DESKTOP HERO ===== */}
-      <section className="hidden sm:block relative overflow-hidden rounded-2xl sm:rounded-3xl mb-8 sm:mb-10 md:mb-12">
+      {/* Hero */}
+      <section className="relative overflow-hidden rounded-2xl sm:rounded-3xl mb-8 sm:mb-10 md:mb-12">
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-primary-500)]/5 via-[var(--color-secondary-500)]/5 to-[var(--color-accent-500)]/5 animate-gradient" />
         {floatingCircles.map((circle, i) => (
           <motion.div
@@ -91,9 +79,9 @@ export function HomePage() {
               transition={{ delay: 0.3 }}
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-[var(--color-text)] tracking-tight leading-tight"
             >
-              Universal Unit <br className="sm:hidden" />
+              Universal Unit Converter
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary-500)] to-[var(--color-secondary-500)]">
-                Converter
+                {" "}Converter
               </span>
             </motion.h1>
             <motion.p
@@ -126,34 +114,8 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ===== MOBILE SEARCH BAR ===== */}
-      <div className="sm:hidden mb-4">
-        <MobileSearchBar value={searchQuery} onChange={setSearchQuery} />
-      </div>
-
-      {/* ===== MOBILE CONVERTER GRID (1-col small phones, 2-col larger phones) ===== */}
-      <div className="sm:hidden">
-        {allFiltered.length === 0 ? (
-          <div className="py-12 text-center">
-            <p className="text-sm text-[var(--color-text-tertiary)]">
-              No converters found
-            </p>
-          </div>
-        ) : (
-          <div className="grid max-[400px]:grid-cols-1 [400px]:grid-cols-2 gap-2.5">
-            {allFiltered.map((converter, index) => (
-              <MobileConverterCard
-                key={converter.id}
-                converter={converter}
-                index={index}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* ===== DESKTOP CONVERTER GRID ===== */}
-      <section id="converters" className="hidden sm:block space-y-4 sm:space-y-5 md:space-y-6 mb-8 sm:mb-10 md:mb-12">
+      {/* Desktop Converter Grid */}
+      <section id="converters" className="space-y-4 sm:space-y-5 md:space-y-6 mb-8 sm:mb-10 md:mb-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -185,8 +147,8 @@ export function HomePage() {
         )}
       </section>
 
-      {/* ===== ABOUT SECTION (desktop only) ===== */}
-      <section id="about" className="hidden sm:block py-8 sm:py-10 md:py-12">
+      {/* About */}
+      <section id="about" className="py-8 sm:py-10 md:py-12">
         <GlassPanel intensity="medium" padding="lg" className="max-w-2xl mx-auto text-center">
           <h2 className="text-lg sm:text-xl font-bold text-[var(--color-text)] mb-3">About</h2>
           <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] leading-relaxed">
@@ -201,6 +163,64 @@ export function HomePage() {
           </div>
         </GlassPanel>
       </section>
+    </>
+  );
+}
+
+function MobileContent({ converters }: { converters: ConverterDefinition[] }) {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const allFiltered = useMemo(() => {
+    if (!searchQuery) return converters;
+    const q = searchQuery.toLowerCase();
+    return converters.filter(
+      (c) =>
+        c.title.toLowerCase().includes(q) ||
+        c.description.toLowerCase().includes(q)
+    );
+  }, [converters, searchQuery]);
+
+  return (
+    <>
+      {/* Mobile Search Bar */}
+      <div className="mb-4">
+        <MobileSearchBar value={searchQuery} onChange={setSearchQuery} />
+      </div>
+
+      {/* Mobile Converter Grid */}
+      {allFiltered.length === 0 ? (
+        <div className="py-12 text-center">
+          <p className="text-sm text-[var(--color-text-tertiary)]">
+            No converters found
+          </p>
+        </div>
+      ) : (
+        <div className="grid max-[400px]:grid-cols-1 [400px]:grid-cols-2 gap-2.5">
+          {allFiltered.map((converter, index) => (
+            <MobileConverterCard
+              key={converter.id}
+              converter={converter}
+              index={index}
+            />
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
+
+export function HomePage() {
+  const { converters } = useApp();
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+
+  return (
+    <>
+      <SEOHead />
+      {isDesktop ? (
+        <DesktopContent converters={converters} />
+      ) : (
+        <MobileContent converters={converters} />
+      )}
     </>
   );
 }
