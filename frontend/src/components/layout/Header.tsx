@@ -95,7 +95,7 @@ export function Header() {
 
           {/* GitHub icon */}
           <a
-            href="https://github.com/Yash-Singh-Chauhan/universal-unit-converter"
+            href="https://github.com/Yash-Singh-Chauhan/-universal-unit-converter"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center rounded-lg p-2 text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] transition-colors"
