@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Home, LayoutGrid, Star, Settings } from "lucide-react";
+import { Home, LayoutGrid, Heart, Settings } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/utils";
 import { ROUTES } from "@/constants";
@@ -10,7 +10,7 @@ const CONVERTER_PATHS = ["/height", "/weight", "/volume", "/currency", "/planet-
 const tabs = [
   { id: "home", label: "Home", icon: Home, path: ROUTES.HOME },
   { id: "converters", label: "Converters", icon: LayoutGrid, path: ROUTES.HOME },
-  { id: "favorites", label: "Favorites", icon: Star, path: ROUTES.FAVORITES },
+  { id: "favorites", label: "Favorites", icon: Heart, path: ROUTES.FAVORITES },
   { id: "settings", label: "Settings", icon: Settings, path: ROUTES.SETTINGS },
 ];
 
@@ -50,7 +50,7 @@ export function MobileBottomNav() {
                 key={tab.id}
                 onClick={() => handleTabPress(tab)}
                 className={cn(
-                  "relative flex flex-col items-center justify-center gap-0.5 py-2 px-4 rounded-xl transition-all duration-200 min-h-[44px] min-w-[52px]",
+                  "relative flex flex-col items-center justify-center gap-0.5 py-2 px-4 rounded-xl transition-all duration-200 min-h-[48px] min-w-[56px]",
                   isActive
                     ? "text-[var(--color-primary-500)]"
                     : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]"
@@ -59,16 +59,22 @@ export function MobileBottomNav() {
                 {isActive && (
                   <motion.div
                     layoutId="mobile-nav-indicator"
-                    className="absolute inset-0 rounded-xl bg-[var(--color-primary-500)]/10"
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    className="absolute inset-0 rounded-xl bg-[var(--color-primary-500)]/10 backdrop-blur-sm border border-[var(--color-primary-500)]/15 shadow-sm shadow-[var(--color-primary-500)]/10"
+                    initial={{ scale: 0.85, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
                   />
                 )}
-                <div className="relative z-10 flex flex-col items-center gap-0.5">
+                <motion.div
+                  className="relative z-10 flex flex-col items-center gap-0.5"
+                  animate={isActive ? { scale: 1.05 } : { scale: 1 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                >
                   <Icon size={20} />
                   <span className="text-[9px] font-semibold leading-none tracking-wide">
                     {tab.label}
                   </span>
-                </div>
+                </motion.div>
               </button>
             );
           })}

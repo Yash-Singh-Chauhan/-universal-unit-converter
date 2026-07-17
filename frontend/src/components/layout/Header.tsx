@@ -123,7 +123,7 @@ export function Header() {
           <div className="flex items-center gap-1.5">
             <button
               onClick={toggleDrawer}
-              className="rounded-full p-2 min-h-[40px] min-w-[40px] flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] transition-colors"
+              className="rounded-full p-2 min-h-[48px] min-w-[48px] flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] transition-colors active:scale-[0.95]"
               aria-label="Open menu"
             >
               <Menu size={20} />
@@ -143,7 +143,7 @@ export function Header() {
           <div className="flex items-center gap-0.5">
             <button
               onClick={() => setMode(theme.mode === "dark" ? "light" : "dark")}
-              className="rounded-full p-2 min-h-[40px] min-w-[40px] flex items-center justify-center text-[var(--color-text-tertiary)] hover:bg-[var(--color-surface-hover)] transition-colors"
+              className="rounded-full p-2 min-h-[48px] min-w-[48px] flex items-center justify-center text-[var(--color-text-tertiary)] hover:bg-[var(--color-surface-hover)] transition-colors active:scale-[0.95]"
               aria-label={`Switch to ${theme.mode === "dark" ? "light" : "dark"} mode`}
             >
               {theme.mode === "dark" ? <Sun size={18} /> : <Moon size={18} />}

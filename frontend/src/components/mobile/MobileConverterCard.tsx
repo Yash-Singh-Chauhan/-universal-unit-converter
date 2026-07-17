@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ChevronRight, Star } from "lucide-react";
+import { ChevronRight, Heart } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/utils";
 import { useFavorites } from "@/hooks";
@@ -25,35 +25,34 @@ export function MobileConverterCard({
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-      className={className}
+      className={cn(className, "touch-ripple")}
     >
-      <div className="group relative flex items-center gap-3 px-4 py-3.5 rounded-[20px] bg-[var(--color-surface)] border border-[var(--color-border)] transition-all duration-200 active:scale-[0.97]">
-        {/* Glass overlay */}
-        <div className="absolute inset-0 rounded-[20px] bg-gradient-to-br from-white/[0.03] to-transparent pointer-events-none" />
+      <Link
+        to={converter.route}
+        className="block group"
+      >
+        <div className="relative flex items-center gap-3 px-4 py-3.5 rounded-[20px] bg-[var(--color-surface)] border border-[var(--color-border)] transition-all duration-200 hover:border-[var(--color-primary-500)]/30 active:scale-[0.97]">
+          {/* Glass overlay */}
+          <div className="absolute inset-0 rounded-[20px] bg-gradient-to-br from-white/[0.03] to-transparent pointer-events-none" />
 
-        {/* Star button — stops propagation so card click still navigates */}
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            toggleFavorite(converter.id);
-          }}
-          className={cn(
-            "absolute top-2 right-2 z-10 flex items-center justify-center w-7 h-7 rounded-full transition-all duration-200",
-            favorited
-              ? "text-[var(--color-warning)] opacity-100"
-              : "text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-70"
-          )}
-          aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
-        >
-          <Star size={13} fill={favorited ? "currentColor" : "none"} />
-        </button>
+          {/* Heart button */}
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              toggleFavorite(converter.id);
+            }}
+            className={cn(
+              "absolute top-2 right-2 z-10 flex items-center justify-center w-8 h-8 min-h-[48px] min-w-[48px] rounded-full transition-all duration-200",
+              favorited
+                ? "text-[var(--color-error)] scale-100"
+                : "text-[var(--color-text-tertiary)] opacity-0 group-hover:opacity-70"
+            )}
+            aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
+          >
+            <Heart size={15} fill={favorited ? "currentColor" : "none"} />
+          </button>
 
-        {/* Link wraps icon + content + arrow */}
-        <Link
-          to={converter.route}
-          className="flex items-center gap-3 flex-1 min-w-0"
-        >
           {/* Icon container */}
           <div className="relative flex items-center justify-center w-11 h-11 rounded-2xl bg-gradient-to-br from-[var(--color-primary-500)]/15 to-[var(--color-secondary-500)]/10 text-[var(--color-primary-500)] flex-shrink-0 shadow-sm">
             <Icon size={22} />
@@ -69,13 +68,13 @@ export function MobileConverterCard({
             </p>
           </div>
 
-          {/* Arrow with group animation */}
+          {/* Arrow */}
           <ChevronRight
             size={18}
             className="relative flex-shrink-0 text-[var(--color-text-tertiary)] transition-transform duration-200 group-hover:translate-x-0.5"
           />
-        </Link>
-      </div>
+        </div>
+      </Link>
     </motion.div>
   );
 }
