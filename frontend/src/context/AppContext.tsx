@@ -1,6 +1,5 @@
 import {
   createContext,
-  useCallback,
   useMemo,
   useState,
   type ReactNode,
@@ -14,10 +13,6 @@ interface AppContextValue {
   /** Currently active converter ID (from route) */
   activeConverterId: string | null;
   setActiveConverterId: (id: string | null) => void;
-  /** Whether the sidebar is open on mobile */
-  sidebarOpen: boolean;
-  setSidebarOpen: (open: boolean) => void;
-  toggleSidebar: () => void;
 }
 
 export const AppContext = createContext<AppContextValue | null>(null);
@@ -30,22 +25,14 @@ export function AppProvider({ children }: AppProviderProps) {
   const [activeConverterId, setActiveConverterId] = useState<string | null>(
     null
   );
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const toggleSidebar = useCallback(() => {
-    setSidebarOpen((prev) => !prev);
-  }, []);
 
   const value = useMemo<AppContextValue>(
     () => ({
       converters: converterDefinitions,
       activeConverterId,
       setActiveConverterId,
-      sidebarOpen,
-      setSidebarOpen,
-      toggleSidebar,
     }),
-    [activeConverterId, sidebarOpen, toggleSidebar]
+    [activeConverterId]
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

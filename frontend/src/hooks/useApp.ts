@@ -1,13 +1,11 @@
 import { useContext } from "react";
 import { AppContext } from "@/context";
+import type { ConverterDefinition } from "@/types";
 
 interface AppContextValue {
-  converters: import("@/types").ConverterDefinition[];
+  converters: ConverterDefinition[];
   activeConverterId: string | null;
   setActiveConverterId: (id: string | null) => void;
-  sidebarOpen: boolean;
-  setSidebarOpen: (open: boolean) => void;
-  toggleSidebar: () => void;
 }
 
 export function useApp(): AppContextValue {
