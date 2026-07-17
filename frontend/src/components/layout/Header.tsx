@@ -1,15 +1,16 @@
 import { useState, useCallback } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
-  Moon, Sun, Ruler, Search, Bell,
+  Moon, Sun, Ruler, Search, Menu,
   Github, Home,
-  Weight, FlaskConical, Coins, Globe, User,
+  Weight, FlaskConical, Coins, Globe,
 } from "lucide-react";
 import { useTheme, useApp } from "@/hooks";
 import { cn } from "@/utils";
 import { ROUTES, APP_NAME } from "@/constants";
 import { Button } from "@/components/ui";
 import { AnimatePresence, motion } from "framer-motion";
+import { MobileDrawer } from "@/components/mobile";
 
 const navLinks = [
   { path: ROUTES.HOME, label: "Home", icon: Home },
@@ -23,8 +24,11 @@ const navLinks = [
 export function Header() {
   const { theme, setMode } = useTheme();
   const [searchOpen, setSearchOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
   const { converters } = useApp();
+
+  const toggleDrawer = useCallback(() => setDrawerOpen((prev) => !prev), []);
 
   const handleSearch = useCallback((e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -114,17 +118,26 @@ export function Header() {
 
       {/* ===== MOBILE HEADER ===== */}
       <div className="lg:hidden border-b border-[var(--color-border)]">
-        <div className="flex h-12 items-center justify-between px-4">
-          {/* Logo + App Name */}
-          <Link
-            to={ROUTES.HOME}
-            className="flex items-center gap-2 text-[var(--color-text)]"
-          >
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--color-primary-500)] to-[var(--color-secondary-500)] text-white">
-              <Ruler size={14} />
-            </div>
-            <span className="text-sm font-bold tracking-tight">{APP_NAME}</span>
-          </Link>
+        <div className="flex h-12 items-center justify-between px-3">
+          {/* Menu button + Logo */}
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={toggleDrawer}
+              className="rounded-full p-2 min-h-[40px] min-w-[40px] flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] transition-colors"
+              aria-label="Open menu"
+            >
+              <Menu size={20} />
+            </button>
+            <Link
+              to={ROUTES.HOME}
+              className="flex items-center gap-2 text-[var(--color-text)]"
+            >
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--color-primary-500)] to-[var(--color-secondary-500)] text-white">
+                <Ruler size={14} />
+              </div>
+              <span className="text-sm font-bold tracking-tight">{APP_NAME}</span>
+            </Link>
+          </div>
 
           {/* Right icons */}
           <div className="flex items-center gap-0.5">
@@ -136,12 +149,6 @@ export function Header() {
               <Search size={18} />
             </button>
 
-            {/* Notification icon (UI only) */}
-            <div className="relative p-2 min-h-[40px] min-w-[40px] flex items-center justify-center text-[var(--color-text-tertiary)]">
-              <Bell size={18} />
-              <span className="absolute top-1.5 right-2 w-2 h-2 rounded-full bg-[var(--color-error)]" />
-            </div>
-
             <button
               onClick={() => setMode(theme.mode === "dark" ? "light" : "dark")}
               className="rounded-full p-2 min-h-[40px] min-w-[40px] flex items-center justify-center text-[var(--color-text-tertiary)] hover:bg-[var(--color-surface-hover)] transition-colors"
@@ -149,14 +156,12 @@ export function Header() {
             >
               {theme.mode === "dark" ? <Sun size={18} /> : <Moon size={18} />}
             </button>
-
-            {/* Profile avatar */}
-            <div className="ml-0.5 w-7 h-7 rounded-full bg-gradient-to-br from-[var(--color-primary-500)] to-[var(--color-secondary-500)] flex items-center justify-center text-white shadow-sm">
-              <User size={13} />
-            </div>
           </div>
         </div>
       </div>
+
+      {/* Mobile Drawer */}
+      <MobileDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
 
       {/* ===== SEARCH BAR (shared) ===== */}
       <AnimatePresence>

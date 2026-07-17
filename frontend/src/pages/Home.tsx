@@ -131,8 +131,8 @@ export function HomePage() {
         <MobileSearchBar value={searchQuery} onChange={setSearchQuery} />
       </div>
 
-      {/* ===== MOBILE CONVERTER LIST ===== */}
-      <div className="sm:hidden space-y-2">
+      {/* ===== MOBILE CONVERTER GRID (1-col small phones, 2-col larger phones) ===== */}
+      <div className="sm:hidden">
         {allFiltered.length === 0 ? (
           <div className="py-12 text-center">
             <p className="text-sm text-[var(--color-text-tertiary)]">
@@ -140,13 +140,15 @@ export function HomePage() {
             </p>
           </div>
         ) : (
-          allFiltered.map((converter, index) => (
-            <MobileConverterCard
-              key={converter.id}
-              converter={converter}
-              index={index}
-            />
-          ))
+          <div className="grid max-[400px]:grid-cols-1 [400px]:grid-cols-2 gap-2.5">
+            {allFiltered.map((converter, index) => (
+              <MobileConverterCard
+                key={converter.id}
+                converter={converter}
+                index={index}
+              />
+            ))}
+          </div>
         )}
       </div>
 
