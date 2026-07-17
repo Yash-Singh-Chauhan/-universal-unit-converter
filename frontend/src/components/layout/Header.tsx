@@ -1,9 +1,9 @@
 import { useState, useCallback } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
-  Moon, Sun, Menu, X, Ruler, Search,
+  Moon, Sun, Ruler, Search,
   Github, Home,
-  Weight, FlaskConical, Coins, Globe,
+  Weight, FlaskConical, Coins, Globe, User,
 } from "lucide-react";
 import { useTheme, useApp } from "@/hooks";
 import { cn } from "@/utils";
@@ -22,12 +22,9 @@ const navLinks = [
 
 export function Header() {
   const { theme, setMode } = useTheme();
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const navigate = useNavigate();
   const { converters } = useApp();
-
-  const closeMobile = useCallback(() => setMobileOpen(false), []);
 
   const handleSearch = useCallback((e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -46,86 +43,116 @@ export function Header() {
   }, [converters, navigate]);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[var(--color-border)] bg-[var(--color-background)]/80 backdrop-blur-xl supports-backdrop-blur:bg-[var(--color-background)]/80 safe-area-padding">
-      <div className="mx-auto flex h-14 sm:h-16 max-w-7xl items-center justify-between px-3 sm:px-6 lg:px-8">
-        {/* Logo */}
-        <Link
-          to={ROUTES.HOME}
-          className="flex items-center gap-2 text-[var(--color-text)] hover:text-[var(--color-primary-500)] transition-colors flex-shrink-0"
-        >
-          <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--color-primary-500)] to-[var(--color-secondary-500)] text-white">
-            <Ruler size={14} className="sm:size-[16px]" />
-          </div>
-          <span className="text-base sm:text-lg font-bold tracking-tight hidden sm:inline">{APP_NAME}</span>
-          <span className="text-base sm:text-lg font-bold tracking-tight sm:hidden">UC</span>
-        </Link>
+    <header className="sticky top-0 z-50 w-full bg-[var(--color-background)]/80 backdrop-blur-xl supports-backdrop-blur:bg-[var(--color-background)]/80 safe-area-padding">
+      {/* ===== DESKTOP HEADER ===== */}
+      <div className="hidden lg:block border-b border-[var(--color-border)]">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-8">
+          {/* Logo */}
+          <Link
+            to={ROUTES.HOME}
+            className="flex items-center gap-2.5 text-[var(--color-text)] hover:text-[var(--color-primary-500)] transition-colors flex-shrink-0"
+          >
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--color-primary-500)] to-[var(--color-secondary-500)] text-white">
+              <Ruler size={16} />
+            </div>
+            <span className="text-lg font-bold tracking-tight">{APP_NAME}</span>
+          </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1">
-          {navLinks.map((link) => (
-            <NavLink
-              key={link.path}
-              to={link.path}
-              end={link.path === ROUTES.HOME}
-              className={({ isActive }) =>
-                cn(
-                  "px-2.5 xl:px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150",
-                  isActive
-                    ? "bg-[var(--color-primary-500)]/10 text-[var(--color-primary-500)]"
-                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)]"
-                )
-              }
+          {/* Desktop Nav */}
+          <nav className="flex items-center gap-0.5 xl:gap-1">
+            {navLinks.map((link) => (
+              <NavLink
+                key={link.path}
+                to={link.path}
+                end={link.path === ROUTES.HOME}
+                className={({ isActive }) =>
+                  cn(
+                    "px-2.5 xl:px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150",
+                    isActive
+                      ? "bg-[var(--color-primary-500)]/10 text-[var(--color-primary-500)]"
+                      : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)]"
+                  )
+                }
+              >
+                {link.label}
+              </NavLink>
+            ))}
+          </nav>
+
+          {/* Right side */}
+          <div className="flex items-center gap-1.5">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSearchOpen(!searchOpen)}
+              icon={<Search size={16} />}
+              aria-label="Search converters"
+              className="touch-target"
+            />
+
+            <a
+              href="https://github.com/Yash-Singh-Chauhan/-universal-unit-converter"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-lg p-2 min-h-[44px] min-w-[44px] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] transition-colors"
+              aria-label="GitHub repository"
             >
-              {link.label}
-            </NavLink>
-          ))}
-        </nav>
+              <Github size={18} />
+            </a>
 
-        {/* Right side */}
-        <div className="flex items-center gap-1 sm:gap-1.5">
-          {/* Search */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setSearchOpen(!searchOpen)}
-            icon={<Search size={16} />}
-            aria-label="Search converters"
-            className="hidden sm:inline-flex touch-target"
-          />
-
-          {/* GitHub icon */}
-          <a
-            href="https://github.com/Yash-Singh-Chauhan/-universal-unit-converter"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center rounded-lg p-2 min-h-[44px] min-w-[44px] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] transition-colors"
-            aria-label="GitHub repository"
-          >
-            <Github size={18} />
-          </a>
-
-          {/* Theme toggle */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setMode(theme.mode === "dark" ? "light" : "dark")}
-            aria-label={`Switch to ${theme.mode === "dark" ? "light" : "dark"} mode`}
-            icon={theme.mode === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-            className="touch-target"
-          />
-
-          {/* Mobile hamburger */}
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="inline-flex items-center justify-center rounded-lg p-2 min-h-[44px] min-w-[44px] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] transition-colors lg:hidden"
-            aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
-          >
-            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setMode(theme.mode === "dark" ? "light" : "dark")}
+              aria-label={`Switch to ${theme.mode === "dark" ? "light" : "dark"} mode`}
+              icon={theme.mode === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+              className="touch-target"
+            />
+          </div>
         </div>
       </div>
 
-      {/* Search Bar - full width on mobile */}
+      {/* ===== MOBILE HEADER ===== */}
+      <div className="lg:hidden border-b border-[var(--color-border)]">
+        <div className="flex h-12 items-center justify-between px-4">
+          {/* Logo + App Name */}
+          <Link
+            to={ROUTES.HOME}
+            className="flex items-center gap-2 text-[var(--color-text)]"
+          >
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--color-primary-500)] to-[var(--color-secondary-500)] text-white">
+              <Ruler size={14} />
+            </div>
+            <span className="text-sm font-bold tracking-tight">{APP_NAME}</span>
+          </Link>
+
+          {/* Right icons */}
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setSearchOpen(!searchOpen)}
+              className="rounded-full p-2 min-h-[40px] min-w-[40px] flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] transition-colors"
+              aria-label="Search"
+            >
+              <Search size={18} />
+            </button>
+
+            <button
+              onClick={() => setMode(theme.mode === "dark" ? "light" : "dark")}
+              className="rounded-full p-2 min-h-[40px] min-w-[40px] flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] transition-colors"
+              aria-label={`Switch to ${theme.mode === "dark" ? "light" : "dark"} mode`}
+            >
+              {theme.mode === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+
+            {/* Profile avatar */}
+            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[var(--color-primary-500)] to-[var(--color-secondary-500)] flex items-center justify-center text-white">
+              <User size={14} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ===== SEARCH BAR (shared) ===== */}
       <AnimatePresence>
         {searchOpen && (
           <motion.div
@@ -133,7 +160,7 @@ export function Header() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.15 }}
-            className="border-t border-[var(--color-border)] px-3 sm:px-4 py-3"
+            className="border-b border-[var(--color-border)] px-3 sm:px-4 py-3"
           >
             <form onSubmit={handleSearch} className="mx-auto w-full max-w-md">
               <div className="relative">
@@ -148,60 +175,6 @@ export function Header() {
               </div>
             </form>
           </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Mobile Drawer - full width on small screens */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
-              onClick={closeMobile}
-            />
-            <motion.nav
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed inset-y-0 right-0 z-50 w-full max-w-xs sm:max-w-sm bg-[var(--color-surface)] border-l border-[var(--color-border)] shadow-2xl lg:hidden"
-            >
-              <div className="flex items-center justify-between px-4 sm:px-5 py-4 border-b border-[var(--color-border)]">
-                <span className="text-sm font-semibold text-[var(--color-text)]">Navigation</span>
-                <button
-                  onClick={closeMobile}
-                  className="rounded-lg p-2 min-h-[44px] min-w-[44px] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] transition-colors flex items-center justify-center"
-                  aria-label="Close menu"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-              <div className="px-3 sm:px-4 py-4 space-y-1">
-                {navLinks.map((link) => (
-                  <NavLink
-                    key={link.path}
-                    to={link.path}
-                    end={link.path === ROUTES.HOME}
-                    onClick={closeMobile}
-                    className={({ isActive }) =>
-                      cn(
-                        "flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all touch-target",
-                        isActive
-                          ? "bg-[var(--color-primary-500)]/10 text-[var(--color-primary-500)]"
-                          : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)]"
-                      )
-                    }
-                  >
-                    <link.icon size={20} />
-                    {link.label}
-                  </NavLink>
-                ))}
-              </div>
-            </motion.nav>
-          </>
         )}
       </AnimatePresence>
     </header>

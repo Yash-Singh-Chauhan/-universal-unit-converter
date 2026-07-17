@@ -1,9 +1,10 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { ConverterCard } from "@/components/common";
 import { SEOHead } from "@/components/common";
 import { Button, GlassPanel } from "@/components/ui";
+import { MobileSearchBar, MobileConverterCard } from "@/components/mobile";
 import { useApp } from "@/hooks";
 
 const floatingCircles = [
@@ -15,6 +16,7 @@ const floatingCircles = [
 
 export function HomePage() {
   const { converters } = useApp();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const categorizedConverters = useMemo(() => ({
     common: converters.filter((c) => c.category === "common"),
@@ -22,16 +24,38 @@ export function HomePage() {
     specialized: converters.filter((c) => c.category === "specialized"),
   }), [converters]);
 
+  const filteredConverters = useMemo(() => {
+    if (!searchQuery) return categorizedConverters;
+    const q = searchQuery.toLowerCase();
+    const filter = (arr: typeof converters) =>
+      arr.filter(
+        (c) =>
+          c.title.toLowerCase().includes(q) ||
+          c.description.toLowerCase().includes(q)
+      );
+    return {
+      common: filter(categorizedConverters.common),
+      financial: filter(categorizedConverters.financial),
+      specialized: filter(categorizedConverters.specialized),
+    };
+  }, [categorizedConverters, searchQuery]);
+
+  const allFiltered = useMemo(
+    () => [
+      ...filteredConverters.common,
+      ...filteredConverters.financial,
+      ...filteredConverters.specialized,
+    ],
+    [filteredConverters]
+  );
+
   return (
     <>
       <SEOHead />
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden rounded-2xl sm:rounded-3xl mb-8 sm:mb-10 md:mb-12">
-        {/* Animated gradient background */}
+      {/* ===== DESKTOP HERO ===== */}
+      <section className="hidden sm:block relative overflow-hidden rounded-2xl sm:rounded-3xl mb-8 sm:mb-10 md:mb-12">
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-primary-500)]/5 via-[var(--color-secondary-500)]/5 to-[var(--color-accent-500)]/5 animate-gradient" />
-
-        {/* Floating blurred circles - smaller on mobile */}
         {floatingCircles.map((circle, i) => (
           <motion.div
             key={i}
@@ -42,20 +66,10 @@ export function HomePage() {
               left: circle.x,
               top: circle.y,
             }}
-            animate={{
-              y: [0, -30, 0],
-              scale: [1, 1.1, 1],
-            }}
-            transition={{
-              duration: 8,
-              delay: circle.delay,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
+            animate={{ y: [0, -30, 0], scale: [1, 1.1, 1] }}
+            transition={{ duration: 8, delay: circle.delay, repeat: Infinity, ease: "easeInOut" }}
           />
         ))}
-
-        {/* Content */}
         <div className="relative z-10 py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -71,7 +85,6 @@ export function HomePage() {
             >
               Free &amp; Open Source
             </motion.span>
-
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -83,17 +96,15 @@ export function HomePage() {
                 Converter
               </span>
             </motion.h1>
-
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
               className="text-sm sm:text-base md:text-lg text-[var(--color-text-secondary)] max-w-xl mx-auto px-2"
             >
-              Convert measurements instantly with speed and precision. 
+              Convert measurements instantly with speed and precision.
               Height, weight, volume, currency, and planetary gravity — all in one place.
             </motion.p>
-
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -115,8 +126,32 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Common Converters */}
-      <section id="converters" className="space-y-4 sm:space-y-5 md:space-y-6 mb-8 sm:mb-10 md:mb-12">
+      {/* ===== MOBILE SEARCH BAR ===== */}
+      <div className="sm:hidden mb-4">
+        <MobileSearchBar value={searchQuery} onChange={setSearchQuery} />
+      </div>
+
+      {/* ===== MOBILE CONVERTER LIST ===== */}
+      <div className="sm:hidden space-y-2">
+        {allFiltered.length === 0 ? (
+          <div className="py-12 text-center">
+            <p className="text-sm text-[var(--color-text-tertiary)]">
+              No converters found
+            </p>
+          </div>
+        ) : (
+          allFiltered.map((converter, index) => (
+            <MobileConverterCard
+              key={converter.id}
+              converter={converter}
+              index={index}
+            />
+          ))
+        )}
+      </div>
+
+      {/* ===== DESKTOP CONVERTER GRID ===== */}
+      <section id="converters" className="hidden sm:block space-y-4 sm:space-y-5 md:space-y-6 mb-8 sm:mb-10 md:mb-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -129,17 +164,17 @@ export function HomePage() {
           </p>
         </motion.div>
 
-        {categorizedConverters.common.length > 0 && (
+        {filteredConverters.common.length > 0 && (
           <div className="grid gap-4 sm:gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {categorizedConverters.common.map((converter, index) => (
+            {filteredConverters.common.map((converter, index) => (
               <ConverterCard key={converter.id} converter={converter} index={index} />
             ))}
           </div>
         )}
 
-        {(categorizedConverters.financial.length > 0 || categorizedConverters.specialized.length > 0) && (
+        {(filteredConverters.financial.length > 0 || filteredConverters.specialized.length > 0) && (
           <div className="grid gap-4 sm:gap-5 grid-cols-1 sm:grid-cols-2 mt-4 sm:mt-5 md:mt-6">
-            {[...categorizedConverters.financial, ...categorizedConverters.specialized].map(
+            {[...filteredConverters.financial, ...filteredConverters.specialized].map(
               (converter, index) => (
                 <ConverterCard key={converter.id} converter={converter} index={index + 3} />
               )
@@ -148,13 +183,13 @@ export function HomePage() {
         )}
       </section>
 
-      {/* About Section */}
-      <section id="about" className="py-8 sm:py-10 md:py-12">
+      {/* ===== ABOUT SECTION (desktop only) ===== */}
+      <section id="about" className="hidden sm:block py-8 sm:py-10 md:py-12">
         <GlassPanel intensity="medium" padding="lg" className="max-w-2xl mx-auto text-center">
           <h2 className="text-lg sm:text-xl font-bold text-[var(--color-text)] mb-3">About</h2>
           <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] leading-relaxed">
-            The Universal Unit Converter is a modern, open-source tool for quick and accurate 
-            unit conversions. Built with React, TypeScript, and Tailwind CSS, it delivers a 
+            The Universal Unit Converter is a modern, open-source tool for quick and accurate
+            unit conversions. Built with React, TypeScript, and Tailwind CSS, it delivers a
             smooth, responsive experience across all devices.
           </p>
           <div className="flex items-center justify-center gap-2 mt-4">

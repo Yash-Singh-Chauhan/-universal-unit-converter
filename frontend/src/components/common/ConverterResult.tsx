@@ -1,5 +1,7 @@
 import { Card, Badge } from "@/components/ui";
+import { MobileFloatingResult } from "@/components/mobile";
 import { cn } from "@/utils";
+import { useIsMobile } from "@/hooks";
 
 interface ConverterResultProps {
   value: string;
@@ -18,6 +20,22 @@ export function ConverterResult({
 }: ConverterResultProps) {
   if (!value) return null;
 
+  const isMobile = useIsMobile();
+
+  // Mobile: Use floating premium result card
+  if (isMobile) {
+    return (
+      <MobileFloatingResult
+        value={value}
+        unit={toUnit}
+        fromUnit={fromUnit}
+        formula={formula}
+        className={className}
+      />
+    );
+  }
+
+  // Desktop: Use existing Card layout
   return (
     <Card
       variant="default"
