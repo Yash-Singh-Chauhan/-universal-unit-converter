@@ -139,16 +139,8 @@ export function Header() {
             </Link>
           </div>
 
-          {/* Right icons */}
+          {/* Right icons — theme toggle only on mobile */}
           <div className="flex items-center gap-0.5">
-            <button
-              onClick={() => setSearchOpen(!searchOpen)}
-              className="rounded-full p-2 min-h-[40px] min-w-[40px] flex items-center justify-center text-[var(--color-text-tertiary)] hover:bg-[var(--color-surface-hover)] transition-colors"
-              aria-label="Search"
-            >
-              <Search size={18} />
-            </button>
-
             <button
               onClick={() => setMode(theme.mode === "dark" ? "light" : "dark")}
               className="rounded-full p-2 min-h-[40px] min-w-[40px] flex items-center justify-center text-[var(--color-text-tertiary)] hover:bg-[var(--color-surface-hover)] transition-colors"

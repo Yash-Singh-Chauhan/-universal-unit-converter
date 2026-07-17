@@ -5,11 +5,13 @@ import { motion } from "framer-motion";
 import { cn } from "@/utils";
 import { ROUTES } from "@/constants";
 
+const CONVERTER_PATHS = ["/height", "/weight", "/volume", "/currency", "/planet-gravity"];
+
 const tabs = [
   { id: "home", label: "Home", icon: Home, path: ROUTES.HOME },
   { id: "converters", label: "Converters", icon: LayoutGrid, path: ROUTES.HOME },
-  { id: "favorites", label: "Favorites", icon: Star, path: ROUTES.HOME },
-  { id: "settings", label: "Settings", icon: Settings, path: ROUTES.HOME },
+  { id: "favorites", label: "Favorites", icon: Star, path: ROUTES.FAVORITES },
+  { id: "settings", label: "Settings", icon: Settings, path: ROUTES.SETTINGS },
 ];
 
 export function MobileBottomNav() {
@@ -17,24 +19,17 @@ export function MobileBottomNav() {
   const navigate = useNavigate();
 
   const activeTab = useMemo(() => {
-    if (location.pathname === ROUTES.HOME) return "home";
-    if (location.pathname.startsWith("/height")) return "converters";
-    if (location.pathname.startsWith("/weight")) return "converters";
-    if (location.pathname.startsWith("/volume")) return "converters";
-    if (location.pathname.startsWith("/currency")) return "converters";
-    if (location.pathname.startsWith("/planet")) return "converters";
+    const path = location.pathname;
+    if (path === ROUTES.HOME) return "home";
+    if (CONVERTER_PATHS.some((p) => path.startsWith(p))) return "converters";
+    if (path.startsWith("/favorites")) return "favorites";
+    if (path.startsWith("/settings")) return "settings";
     return "home";
   }, [location.pathname]);
 
   const handleTabPress = useCallback(
     (tab: (typeof tabs)[0]) => {
-      if (tab.id === "home") {
-        navigate(tab.path);
-      } else if (tab.id === "converters") {
-        navigate(ROUTES.HOME);
-      } else {
-        navigate(tab.path);
-      }
+      navigate(tab.path);
     },
     [navigate]
   );

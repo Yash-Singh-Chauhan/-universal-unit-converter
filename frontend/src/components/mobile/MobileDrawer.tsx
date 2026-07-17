@@ -41,7 +41,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
       id: "favorites",
       label: "Favorites",
       icon: <Star size={20} />,
-      action: () => { onClose(); },
+      action: () => { navigate(ROUTES.FAVORITES); onClose(); },
     },
     {
       id: "recent",
@@ -54,7 +54,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
       id: "settings",
       label: "Settings",
       icon: <Settings size={20} />,
-      action: () => { navigate(ROUTES.HOME); onClose(); },
+      action: () => { navigate(ROUTES.SETTINGS); onClose(); },
     },
     {
       id: "about",

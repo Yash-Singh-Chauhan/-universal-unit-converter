@@ -10,6 +10,8 @@ export const ROUTES = {
   VOLUME: "/volume",
   CURRENCY: "/currency",
   PLANET_GRAVITY: "/planet-gravity",
+  FAVORITES: "/favorites",
+  SETTINGS: "/settings",
   NOT_FOUND: "/404",
 } as const;
 
@@ -25,6 +27,7 @@ export const STORAGE_KEYS = {
   THEME: "uc-theme",
   SETTINGS: "uc-settings",
   CACHE: "uc-cache",
+  FAVORITES: "uc-favorites",
 } as const;
 
 export const API_ENDPOINTS = {

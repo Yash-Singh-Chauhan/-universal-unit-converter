@@ -3,6 +3,8 @@ import { MainLayout } from "@/components/layout";
 import {
   HomePage,
   NotFoundPage,
+  FavoritesPage,
+  SettingsPage,
   HeightConverterPage,
   WeightConverterPage,
   VolumeConverterPage,
@@ -45,6 +47,14 @@ export const routeConfig: RouteObject[] = [
       {
         path: "planet-gravity",
         element: <PlanetGravityConverterPage />,
+      },
+      {
+        path: "favorites",
+        element: <FavoritesPage />,
+      },
+      {
+        path: "settings",
+        element: <SettingsPage />,
       },
       {
         path: "404",

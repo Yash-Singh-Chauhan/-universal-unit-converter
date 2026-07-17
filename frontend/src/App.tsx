@@ -1,4 +1,4 @@
-import { ThemeProvider, AppProvider, SettingsProvider } from "@/context";
+import { ThemeProvider, AppProvider, SettingsProvider, FavoritesProvider } from "@/context";
 import { AppRouter } from "@/routes";
 
 export function App() {
@@ -6,7 +6,9 @@ export function App() {
     <ThemeProvider>
       <AppProvider>
         <SettingsProvider>
-          <AppRouter />
+          <FavoritesProvider>
+            <AppRouter />
+          </FavoritesProvider>
         </SettingsProvider>
       </AppProvider>
     </ThemeProvider>
