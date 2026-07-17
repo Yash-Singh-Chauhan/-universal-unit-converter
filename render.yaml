@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: universal-converter-api
+    runtime: node
+    repo: https://github.com/Yash-Singh-Chauhan/-universal-unit-converter
+    branch: master
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: PORT
+        value: "3001"
+    plan: free
